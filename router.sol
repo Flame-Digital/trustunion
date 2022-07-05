@@ -12,12 +12,16 @@ contract router {
 
     function routTokens(IERC20 token, address[] memory recipients, uint256[] memory values, uint amount) external {
 
+        require(address(token) != address(0), "Token address is null address!");
+
+        require(recipients.length == values.length, "recipients.length != values.length!");
+
         uint sum = 0;
 
         for(uint a = 0; a < values.length; a++)
           sum = sum + values[a];
 
-        require(sum == amount, "Values != amount");
+        require(sum == amount, "Values != amount!");
 
         token.transferFrom(msg.sender, address(this), amount);
 
