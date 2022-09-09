@@ -537,9 +537,16 @@ interface IERC20 {
 }
 
 contract Router is Ownable {
+    event TokenBatchSend(address indexed sender, uint256 indexed send_type, address[] recipinets, uint256[] values, uint256 amount);
     using SafeERC20 for IERC20;
 
-    function routTokens(IERC20 token, address[] memory recipients, uint256[] memory values, uint amount) external {
+    function routTokens(
+        IERC20 token,
+        address[] memory recipients,
+        uint256[] memory values,
+        uint amount,
+        uint256 send_type
+    ) external {
         require (recipients.length == values.length, "Router::routTokens: bad input arrays dimension");
 
         uint sum = 0;
@@ -552,5 +559,7 @@ contract Router is Ownable {
 
         for (uint i = 0; i < recipients.length; i++)
             token.safeTransfer(recipients[i], values[i]);
+
+        emit TokenBatchSend(_msgSender(), send_type, recipients, values, amount);
     }
 }
